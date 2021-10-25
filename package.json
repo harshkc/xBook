@@ -24,6 +24,7 @@
     "history": "^5.0.0",
     "match-sorter": "^6.3.0",
     "msw": "^0.29.0",
+    "netlify-cli": "^6.14.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -80,8 +81,7 @@
     "lint": "eslint . --cache-location node_modules/.cache/eslint",
     "format": "prettier --write \"**/*.+(js|json|css|md|mdx|html)\"",
     "setup": "node setup",
-    "validate-exercises": "node ./scripts/validate-exercises",
-    "validate": "npm run validate-exercises && npm-run-all --parallel lint test:coverage && node ./scripts/build"
+    "netlify:deploy": "netlify deploy --dir=./build -p -m \"$(git log -1 --pretty=%B)\""
   },
   "eslintConfig": {
     "extends": "react-app"
