@@ -4,6 +4,7 @@ import {jsx} from '@emotion/core'
 import 'bootstrap/dist/css/bootstrap-reboot.css'
 import '@reach/dialog/styles.css'
 import * as React from 'react'
+import {loadDevTools} from 'dev-tools/load'
 import ReactDOM from 'react-dom'
 import {Button, Input, FormGroup, Spinner} from './components/lib'
 import {Modal, ModalContents, ModalOpenButton} from './components/modal'
@@ -106,4 +107,6 @@ function App() {
   )
 }
 
-ReactDOM.render(<App />, document.getElementById('root'))
+loadDevTools(() => {
+  ReactDOM.render(<App />, document.getElementById('root'))
+})
