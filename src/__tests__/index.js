@@ -1,55 +1,57 @@
-import chalk from 'chalk'
 import ReactDOM from 'react-dom'
-import {screen, prettyDOM} from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
+import {screen, waitForElementToBeRemoved, within} from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import faker from 'faker'
+import {server} from 'test/server'
 
-function withMessage(cb, message, {solo = true} = {}) {
-  try {
-    cb()
-  } catch (error) {
-    if (solo) {
-      // eslint-disable-next-line no-throw-literal
-      throw `🚨  ${chalk.reset.red(message)}`
-    } else {
-      error.message = `🚨  ${chalk.reset.red(message)}\n\n${error.message}`
-    }
-    throw error
+// enable API mocking in test runs using the same request handlers
+// as for the client-side mocking.
+beforeAll(() => server.listen())
+afterAll(() => server.close())
+afterEach(() => server.resetHandlers())
+
+// this is a pretty comprehensive test and CI is pretty slow...
+jest.setTimeout(25000)
+
+function buildUser(overrides) {
+  return {
+    id: faker.random.uuid(),
+    username: faker.internet.userName(),
+    password: faker.internet.password(),
+    ...overrides,
   }
 }
 
-test('renders the app', () => {
+const waitForLoadingToFinish = () =>
+  waitForElementToBeRemoved(
+    () => [
+      ...screen.queryAllByLabelText(/loading/i),
+      ...screen.queryAllByText(/loading/i),
+    ],
+    {timeout: 4000},
+  )
+
+test('can login and use the book search', async () => {
   const root = document.createElement('div')
   root.id = 'root'
   document.body.append(root)
 
   require('..')
 
-  screen.getByTitle('Bookshelf')
-  screen.getByRole('heading', {name: /Bookshelf/i})
-  screen.getByRole('button', {name: /Login/i})
-  screen.getByRole('button', {name: /Register/i})
+  const user = buildUser()
 
-  const cssEl = document.body.querySelector('[css]')
-  withMessage(
-    () => expect(cssEl).toBeNull(),
-    `
-At least one element has an attribute called "css". This means that emotion did not compile the prop correctly.
+  userEvent.click(await screen.findByRole('button', {name: /register/i}))
 
-Make sure to include this at the top of the file:
+  const modal = within(screen.getByRole('dialog'))
+  userEvent.type(modal.getByLabelText(/username/i), user.username)
+  userEvent.type(modal.getByLabelText(/password/i), user.password)
 
-/** @jsx jsx */
-import {jsx} from '@emotion/core'
+  userEvent.click(modal.getByRole('button', {name: /register/i}))
 
+  await waitForLoadingToFinish()
 
-Here's the element that has the css attribute that wasn't compiled:
-
-${prettyDOM(cssEl)}
-    `.trim(),
-  )
-
-  withMessage(
-    () => expect(document.body.querySelector('[class*=css-]')).not.toBeNull(),
-    `None of the elements are styled by emotion. Make sure to render a styled component and use the css prop.`,
-  )
+  userEvent.click(screen.getByRole('button', {name: /logout/i}))
 
   // cleanup
   ReactDOM.unmountComponentAtNode(root)
