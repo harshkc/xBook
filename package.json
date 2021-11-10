@@ -4,7 +4,7 @@
   "private": true,
   "author": "Harsh Choudhary <harsh.hkc@protonmail.com> (https://harshkc.tech/)",
   "license": "",
-  "homepage": "",
+  "homepage": "https://localhost:3000/",
   "engines": {
     "node": "12 || 14 || 15 || 16",
     "npm": ">=6"
