@@ -1,156 +1,109 @@
-import {renderHook, act} from '@testing-library/react-hooks'
-import {useAsync} from '../hooks'
+import {queryCache} from 'react-query'
+import * as auth from 'auth-provider'
+import {server, rest} from 'test/server'
+import {client} from '../api-client'
 
-beforeEach(() => {
-  jest.spyOn(console, 'error')
-})
+const apiURL = process.env.REACT_APP_API_URL
 
-afterEach(() => {
-  console.error.mockRestore()
-})
+jest.mock('react-query')
+jest.mock('auth-provider')
 
-function deferred() {
-  let resolve, reject
-  const promise = new Promise((res, rej) => {
-    resolve = res
-    reject = rej
-  })
-  return {promise, resolve, reject}
-}
-
-const defaultState = {
-  status: 'idle',
-  data: null,
-  error: null,
-
-  isIdle: true,
-  isLoading: false,
-  isError: false,
-  isSuccess: false,
-
-  run: expect.any(Function),
-  reset: expect.any(Function),
-  setData: expect.any(Function),
-  setError: expect.any(Function),
-}
-
-const pendingState = {
-  ...defaultState,
-  status: 'pending',
-  isIdle: false,
-  isLoading: true,
-}
-
-const resolvedState = {
-  ...defaultState,
-  status: 'resolved',
-  isIdle: false,
-  isSuccess: true,
-}
-
-const rejectedState = {
-  ...defaultState,
-  status: 'rejected',
-  isIdle: false,
-  isError: true,
-}
-
-test('calling run with a promise which resolves', async () => {
-  const {promise, resolve} = deferred()
-  const {result} = renderHook(() => useAsync())
-  expect(result.current).toEqual(defaultState)
-  let p
-  act(() => {
-    p = result.current.run(promise)
-  })
-  expect(result.current).toEqual(pendingState)
-  const resolvedValue = Symbol('resolved value')
-  await act(async () => {
-    resolve(resolvedValue)
-    await p
-  })
-  expect(result.current).toEqual({
-    ...resolvedState,
-    data: resolvedValue,
-  })
-
-  act(() => {
-    result.current.reset()
-  })
-  expect(result.current).toEqual(defaultState)
-})
-
-test('calling run with a promise which rejects', async () => {
-  const {promise, reject} = deferred()
-  const {result} = renderHook(() => useAsync())
-  expect(result.current).toEqual(defaultState)
-  let p
-  act(() => {
-    p = result.current.run(promise)
-  })
-  expect(result.current).toEqual(pendingState)
-  const rejectedValue = Symbol('rejected value')
-  await act(async () => {
-    reject(rejectedValue)
-    await p.catch(() => {
-      /* ignore error */
-    })
-  })
-  expect(result.current).toEqual({...rejectedState, error: rejectedValue})
-})
-
-test('can specify an initial state', () => {
-  const mockData = Symbol('resolved value')
-  const customInitialState = {status: 'resolved', data: mockData}
-  const {result} = renderHook(() => useAsync(customInitialState))
-  expect(result.current).toEqual({
-    ...resolvedState,
-    ...customInitialState,
-  })
-})
-
-test('can set the data', () => {
-  const mockData = Symbol('resolved value')
-  const {result} = renderHook(() => useAsync())
-  act(() => {
-    result.current.setData(mockData)
-  })
-  expect(result.current).toEqual({
-    ...resolvedState,
-    data: mockData,
-  })
-})
-
-test('can set the error', () => {
-  const mockError = Symbol('rejected value')
-  const {result} = renderHook(() => useAsync())
-  act(() => {
-    result.current.setError(mockError)
-  })
-  expect(result.current).toEqual({
-    ...rejectedState,
-    error: mockError,
-  })
-})
-
-test('No state updates happen if the component is unmounted while pending', async () => {
-  const {promise, resolve} = deferred()
-  const {result, unmount} = renderHook(() => useAsync())
-  let p
-  act(() => {
-    p = result.current.run(promise)
-  })
-  unmount()
-  await act(async () => {
-    resolve()
-    await p
-  })
-  expect(console.error).not.toHaveBeenCalled()
-})
-
-test('calling "run" without a promise results in an early error', () => {
-  const {result} = renderHook(() => useAsync())
-  expect(() => result.current.run()).toThrowErrorMatchingInlineSnapshot(
-    `"The argument passed to useAsync().run must be a promise. Maybe a function that's passed isn't returning anything?"`,
+test('calls fetch at the endpoint with the arguments for GET requests', async () => {
+  const endpoint = 'test-endpoint'
+  const mockResult = {mockValue: 'VALUE'}
+  server.use(
+    rest.get(`${apiURL}/${endpoint}`, async (req, res, ctx) => {
+      return res(ctx.json(mockResult))
+    }),
   )
+
+  const result = await client(endpoint)
+
+  expect(result).toEqual(mockResult)
+})
+
+test('adds auth token when a token is provided', async () => {
+  const token = 'FAKE_TOKEN'
+
+  let request
+  const endpoint = 'test-endpoint'
+  const mockResult = {mockValue: 'VALUE'}
+  server.use(
+    rest.get(`${apiURL}/${endpoint}`, async (req, res, ctx) => {
+      request = req
+      return res(ctx.json(mockResult))
+    }),
+  )
+
+  await client(endpoint, {token})
+
+  expect(request.headers.get('Authorization')).toBe(`Bearer ${token}`)
+})
+
+test('allows for config overrides', async () => {
+  let request
+  const endpoint = 'test-endpoint'
+  const mockResult = {mockValue: 'VALUE'}
+  server.use(
+    rest.get(`${apiURL}/${endpoint}`, async (req, res, ctx) => {
+      request = req
+      return res(ctx.json(mockResult))
+    }),
+  )
+
+  const customConfig = {
+    mode: 'cors',
+    headers: {'Content-Type': 'fake-type'},
+  }
+
+  await client(endpoint, customConfig)
+
+  expect(request.mode).toBe(customConfig.mode)
+  expect(request.headers.get('Content-Type')).toBe(
+    customConfig.headers['Content-Type'],
+  )
+})
+
+test('when data is provided, it is stringified and the method defaults to POST', async () => {
+  const endpoint = 'test-endpoint'
+  server.use(
+    rest.post(`${apiURL}/${endpoint}`, async (req, res, ctx) => {
+      return res(ctx.json(req.body))
+    }),
+  )
+  const data = {a: 'b'}
+  const result = await client(endpoint, {data})
+
+  expect(result).toEqual(data)
+})
+
+test('automatically logs the user out if a request returns a 401', async () => {
+  const endpoint = 'test-endpoint'
+  const mockResult = {mockValue: 'VALUE'}
+  server.use(
+    rest.get(`${apiURL}/${endpoint}`, async (req, res, ctx) => {
+      return res(ctx.status(401), ctx.json(mockResult))
+    }),
+  )
+
+  const error = await client(endpoint).catch(e => e)
+
+  expect(error.message).toMatchInlineSnapshot(`"Please re-authenticate."`)
+
+  expect(queryCache.clear).toHaveBeenCalledTimes(1)
+  expect(auth.logout).toHaveBeenCalledTimes(1)
+})
+
+test("correctly rejects the promise if there's an error", async () => {
+  const testError = {message: 'Test error'}
+  const endpoint = 'test-endpoint'
+  server.use(
+    rest.get(`${apiURL}/${endpoint}`, async (req, res, ctx) => {
+      return res(ctx.status(400), ctx.json(testError))
+    }),
+  )
+
+  const error = await client(endpoint).catch(e => e)
+
+  expect(error).toEqual(testError)
 })
