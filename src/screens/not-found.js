@@ -14,7 +14,7 @@ function NotFoundScreen() {
       }}
     >
       <div>
-        Sorry... nothing here. <Link to="/discover">Go home</Link>
+        Sorry... nothing here. <Link to="/list">Go home</Link>
       </div>
     </div>
   )
