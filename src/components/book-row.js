@@ -1,11 +1,13 @@
 /** @jsx jsx */
 import {jsx} from '@emotion/core'
 
+import {Link} from 'react-router-dom'
 import * as mq from 'styles/media-queries'
 import * as colors from 'styles/colors'
 
 function BookRow({book}) {
   const {title, author, coverImageUrl} = book
+
   const id = `book-row-book-${book.id}`
 
   return (
@@ -17,7 +19,7 @@ function BookRow({book}) {
         position: 'relative',
       }}
     >
-      <div
+      <Link
         aria-labelledby={id}
         to={`/book/${book.id}`}
         css={{
@@ -82,7 +84,7 @@ function BookRow({book}) {
             {book.synopsis.substring(0, 500)}...
           </small>
         </div>
-      </div>
+      </Link>
     </div>
   )
 }
