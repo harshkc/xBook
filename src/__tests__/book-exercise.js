@@ -113,3 +113,53 @@ test('can remove a list item for the book', async () => {
     screen.queryByRole('button', {name: /remove from list/i}),
   ).not.toBeInTheDocument()
 })
+
+test('can mark a list item as read', async () => {
+  const {listItem} = await renderBookScreen()
+
+  // set the listItem to be unread in the DB
+  await listItemsDB.update(listItem.id, {finishDate: null})
+
+  const markAsReadButton = screen.getByRole('button', {name: /mark as read/i})
+  userEvent.click(markAsReadButton)
+  expect(markAsReadButton).toBeDisabled()
+
+  await waitForLoadingToFinish()
+
+  expect(
+    screen.getByRole('button', {name: /mark as unread/i}),
+  ).toBeInTheDocument()
+  expect(screen.getAllByRole('radio', {name: /star/i})).toHaveLength(5)
+
+  const startAndFinishDateNode = screen.getByLabelText(/start and finish date/i)
+  expect(startAndFinishDateNode).toHaveTextContent(
+    `${formatDate(listItem.startDate)} — ${formatDate(Date.now())}`,
+  )
+
+  expect(
+    screen.queryByRole('button', {name: /mark as read/i}),
+  ).not.toBeInTheDocument()
+})
+
+test('can edit a note', async () => {
+  // using fake timers to skip debounce time
+  jest.useFakeTimers()
+  const {listItem} = await renderBookScreen()
+
+  const newNotes = faker.lorem.words()
+  const notesTextarea = screen.getByRole('textbox', {name: /notes/i})
+
+  userEvent.clear(notesTextarea)
+  userEvent.type(notesTextarea, newNotes)
+
+  // wait for the loading spinner to show up
+  await screen.findByLabelText(/loading/i)
+  // wait for the loading spinner to go away
+  await waitForLoadingToFinish()
+
+  expect(notesTextarea).toHaveValue(newNotes)
+
+  expect(await listItemsDB.read(listItem.id)).toMatchObject({
+    notes: newNotes,
+  })
+})
