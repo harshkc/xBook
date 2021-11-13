@@ -10,6 +10,8 @@ on:
     branches: [ ci/cypress ]
     
 env:
+  REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+  REACT_APP_AUTH_URL : ${{ secrets.REACT_APP_AUTH_URL }}
   SKIP_PREFLIGHT_CHECK: true
   DISABLE_NEW_JSX_TRANSFORM: true
   FAST_REFRESH: false
