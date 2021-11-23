@@ -7,7 +7,9 @@
 [![codecov](https://codecov.io/gh/harshkc/xBook/branch/main/graph/badge.svg?token=X6AE6E0CNW)](https://codecov.io/gh/harshkc/xBook)
 
 ![Application working](images/xBook.gif?raw=true "xBook")
-![Perfect lighthouse score](images/perfect_lighthouse_xBook.gif?raw=true "Lighthouse score")
+
+![Perfect lighthouse score](images/perfect_lighthouse_xBook.png?raw=true "Lighthouse score")
+
 
 ## Note: 
 This project is not built to WoW anyone but to show the author's good developer practises, testing skills - unit, integration and e2e cypress, 
