@@ -1,9 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* clears the 'X' from Internet Explorer */
 input[type='search']::-ms-clear {
   display: none;
   width: 0;
   height: 0;
 }
+
 input[type='search']::-ms-reveal {
   display: none;
   width: 0;
@@ -26,4 +31,24 @@ a:not(:focus) {
 a:hover,
 a:focus {
   text-decoration: underline;
+}
+
+.h1 {
+  @apply my-2 text-4xl font-bold leading-tight md:text-5xl;
+}
+
+.h2 {
+  @apply my-2 text-3xl font-semibold leading-tight md:text-4xl;
+}
+.h3 {
+  @apply my-1 text-2xl font-medium md:text-3xl;
+}
+.h4 {
+  @apply my-1 text-xl font-medium md:text-2xl;
+}
+.h5 {
+  @apply my-1 text-lg font-medium md:text-xl;
+}
+.h6 {
+  @apply my-1 text-lg font-medium;
 }
