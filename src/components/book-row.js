@@ -3,8 +3,6 @@ import {jsx} from '@emotion/core'
 
 import {Link} from 'react-router-dom'
 import {useListItem} from 'utils/list-items'
-import * as mq from 'styles/media-queries'
-import * as colors from 'styles/colors'
 import {StatusButtons} from './status-buttons'
 import {Rating} from './rating'
 
@@ -15,64 +13,34 @@ function BookRow({book}) {
   const id = `book-row-book-${book.id}`
 
   return (
-    <div
-      css={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        position: 'relative',
-      }}
-    >
+    <div className="relative flex items-center justify-center">
       <Link
         aria-labelledby={id}
         to={`/book/${book.id}`}
-        css={{
-          minHeight: 270,
+        className="grid h-auto p-5 border-r-2 hover:text-gray-800 hover:shadow-md hover:no-underline focus:shadow-md focus:no-underline"
+        style={{
           flexGrow: 2,
-          display: 'grid',
           gridTemplateColumns: '140px 1fr',
           gridGap: 20,
-          border: `1px solid ${colors.gray20}`,
-          color: colors.text,
-          padding: '1.25em',
-          borderRadius: '3px',
-          ':hover,:focus': {
-            textDecoration: 'none',
-            boxShadow: '0 5px 15px -5px rgba(0,0,0,.08)',
-            color: 'inherit',
-          },
+          border: `1px solid #e4e5e9`,
         }}
       >
-        <div
-          css={{
-            width: 140,
-            [mq.small]: {
-              width: 100,
-            },
-          }}
-        >
+        <div className="w-24 md:w-36">
           <img
             src={coverImageUrl}
             alt={`${title} book cover`}
-            css={{maxHeight: '100%', width: '100%'}}
+            className="w-full max-h-full p-2"
           />
         </div>
-        <div css={{flex: 1}}>
-          <div css={{display: 'flex', justifyContent: 'space-between'}}>
-            <div css={{flex: 1}}>
-              <h2
-                id={id}
-                css={{
-                  fontSize: '1.25em',
-                  margin: '0',
-                  color: colors.indigo,
-                }}
-              >
+        <div className="flex-1">
+          <div className="flex justify-between">
+            <div className="flex-1">
+              <div className="my-0 text-blue-800 h5" id={id}>
                 {title}
-              </h2>
+              </div>
               {listItem?.finishDate ? <Rating listItem={listItem} /> : null}
             </div>
-            <div css={{marginLeft: 10}}>
+            <div className="ml-2.5">
               <div
                 css={{
                   marginTop: '0.4em',
@@ -85,23 +53,12 @@ function BookRow({book}) {
               <small>{book.publisher}</small>
             </div>
           </div>
-          <small css={{whiteSpace: 'break-spaces', display: 'block'}}>
+          <small className="block text-sm" style={{whiteSpace: 'break-spaces'}}>
             {book.synopsis.substring(0, 500)}...
           </small>
         </div>
       </Link>
-      <div
-        css={{
-          marginLeft: '20px',
-          position: 'absolute',
-          right: -20,
-          color: colors.gray80,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-around',
-          height: '100%',
-        }}
-      >
+      <div className="absolute flex flex-col justify-around h-full ml-5 text-gray-800 -right-5">
         <StatusButtons book={book} />
       </div>
     </div>

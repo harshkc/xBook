@@ -46,7 +46,7 @@ function BookScreen() {
           <div>
             <div css={{display: 'flex', position: 'relative'}}>
               <div css={{flex: 1, justifyContent: 'space-between'}}>
-                <h1>{title}</h1>
+                <div className="h2">{title}</div>
                 <div>
                   <i>{author}</i>
                   <span css={{marginRight: 6, marginLeft: 6}}>|</span>

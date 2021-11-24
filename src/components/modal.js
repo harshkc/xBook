@@ -50,7 +50,7 @@ function ModalContents({title, children, ...props}) {
           </CircleButton>
         </ModalDismissButton>
       </div>
-      <h3 css={{textAlign: 'center', fontSize: '2em'}}>{title}</h3>
+      <div className="text-center h3">{title}</div>
       {children}
     </ModalContentsBase>
   )

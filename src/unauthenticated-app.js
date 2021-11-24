@@ -23,35 +23,23 @@ function LoginForm({onSubmit, submitButton}) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      css={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'stretch',
-        '> div': {
-          margin: '10px auto',
-          width: '100%',
-          maxWidth: '300px',
-        },
-      }}
-    >
-      <FormGroup>
+    <form onSubmit={handleSubmit} className="flex flex-col items-stretch">
+      <FormGroup className="w-full max-w-xs mx-auto my-3">
         <label htmlFor="username">Username</label>
         <Input id="username" />
       </FormGroup>
-      <FormGroup>
+      <FormGroup className="w-full max-w-xs mx-auto my-3">
         <label htmlFor="password">Password</label>
         <Input id="password" type="password" />
       </FormGroup>
-      <div>
+      <div className="w-full max-w-xs mx-auto my-3">
         {React.cloneElement(
           submitButton,
           {type: 'submit'},
           ...(Array.isArray(submitButton.props.children)
             ? submitButton.props.children
             : [submitButton.props.children]),
-          isLoading ? <Spinner css={{marginLeft: 5}} /> : null,
+          isLoading ? <Spinner className="ml-1" /> : null,
         )}
       </div>
       {isError ? <ErrorMessage error={error} /> : null}
@@ -62,18 +50,9 @@ function LoginForm({onSubmit, submitButton}) {
 function UnauthenticatedApp() {
   const {login, register} = useAuth()
   return (
-    <div
-      css={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-        height: '100vh',
-      }}
-    >
+    <div className="flex flex-col items-center justify-center w-full h-screen">
       <Logo width="80" height="80" />
-      <h1>Bookshelf</h1>
+      <div className="h2">Bookshelf</div>
       <div
         css={{
           display: 'grid',
