@@ -32,7 +32,7 @@ function withClassNames(type, styleProps, ...getClassNames) {
 
 const CircleButton = withClassNames(
   'button',
-  'flex items-center justify-center w-10 h-10 leading-none border border-gray-200 border-solid rounded-full cursor-pointer',
+  'flex items-center justify-center w-10 h-10 leading-none border border-secondary10 border-solid rounded-full cursor-pointer text-textPrimary bg-base',
 )
 
 const BookListUL = withClassNames(
@@ -50,14 +50,14 @@ const Button = withClassNames(
   'button',
   ['variant'],
   ({variant = 'primary'}) => [
-    'px-4 py-3 leading-none border-0',
+    'px-4 py-2.5 leading-none border-0 rounded-sm',
     buttonVariants[variant],
   ],
 )
 
 const buttonVariants = {
-  primary: 'bg-indigo-800 text-white',
-  secondary: 'bg-gray-100 text-gray-800',
+  primary: 'bg-primary text-white',
+  secondary: 'bg-secondary text-textPrimary',
 }
 
 const FormGroup = withClassNames('div', 'flex flex-col')
@@ -72,35 +72,36 @@ function FullPageSpinner() {
 
 const Link = withClassNames(
   RouterLink,
-  'text-indigo-700 hover:text-blue-800 hover:underline',
+  'text-primaryDarken hover:text-primary hover:underline',
 )
 
 const Input = withClassNames(
   'input',
-  'px-3 py-2 bg-gray-100 rounded-sm border-gray-200 border-solid border',
+  'px-3 py-2 bg-secondary rounded-sm border-secondary10 border-solid border',
 )
 
 const Textarea = withClassNames(
   'textarea',
-  'px-3 py-2 bg-gray-100 border-gray-200 border-solid border',
+  'px-3 py-2 bg-secondary rounded-sm border-secondary10 border-solid border',
 )
 
 const Dialog = withClassNames(
   ReachDialog,
-  'w-full m-auto md:max-w-md md:rounded-sm md:pb-14 md:shadow-md',
+  'w-full mx-auto margin-vertical-20 md:max-w-md md:rounded-sm md:pb-14 md:shadow-md',
 )
 
-function ErrorMessage({error, variant = 'stacked', ...props}) {
+function ErrorMessage({error, variant = 'stacked', classes, ...props}) {
   return (
     <div
       role="alert"
-      className={`${variant === 'stacked' ? 'block' : 'inline-block'}`}
+      className={`${
+        variant === 'stacked' ? 'block' : 'inline-block'
+      } ${classes}`}
       {...props}
     >
-      <span className="text-red-500">There was an error: </span>
+      <span className="text-danger">There was an error: </span>
       <pre
-        style={{whiteSpace: 'break-spaces'}}
-        className={`mx-0 mt-0 -mb-1.5 text-red-500
+        className={`mx-0 mt-0 -mb-1.5 text-danger whitespace-pre-wrap
         ${variant === 'stacked' ? 'block' : 'inline-block'}
         `}
       >
@@ -116,10 +117,10 @@ function FullPageErrorFallback({error}) {
       role="alert"
       className="flex flex-col items-center justify-center h-full"
     >
-      <p className="text-red-500">
+      <p className="text-danger">
         Uh oh... There's a problem. Try refreshing the app.
       </p>
-      <pre className="text-red-500">{error.message}</pre>
+      <pre className="text-danger">{error.message}</pre>
     </div>
   )
 }

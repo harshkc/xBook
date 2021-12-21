@@ -1,6 +1,3 @@
-/** @jsx jsx */
-import {jsx} from '@emotion/core'
-
 import * as React from 'react'
 import debounceFn from 'debounce-fn'
 import {FaRegCalendarAlt} from 'react-icons/fa'
@@ -9,8 +6,6 @@ import {useParams} from 'react-router-dom'
 import {useBook} from 'utils/books'
 import {formatDate} from 'utils/misc'
 import {useListItem, useUpdateListItem} from 'utils/list-items'
-import * as mq from 'styles/media-queries'
-import * as colors from 'styles/colors'
 import {Spinner, Textarea, ErrorMessage} from 'components/lib'
 import {Rating} from 'components/rating'
 import {Profiler} from 'components/profiler'
@@ -27,53 +22,34 @@ function BookScreen() {
     <Profiler id="Book Screen" metadata={{bookId, listItemId: listItem?.id}}>
       <div>
         <div
-          css={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 2fr',
-            gridGap: '2em',
-            marginBottom: '1em',
-            [mq.small]: {
-              display: 'flex',
-              flexDirection: 'column',
-            },
-          }}
+          className="flex flex-col md:grid md:gap-8 md:mb-4"
+          style={{gridTemplateColumns: '1fr 2fr'}}
         >
           <img
             src={coverImageUrl}
             alt={`${title} book cover`}
-            css={{width: '100%', maxWidth: '14rem'}}
+            className="w-48 mx-auto sm:m-0"
           />
           <div>
-            <div css={{display: 'flex', position: 'relative'}}>
-              <div css={{flex: 1, justifyContent: 'space-between'}}>
-                <div className="h2">{title}</div>
+            <div className="relative flex">
+              <div className="justify-between flex-1">
+                <h1 className="h2">{title}</h1>
                 <div>
                   <i>{author}</i>
-                  <span css={{marginRight: 6, marginLeft: 6}}>|</span>
+                  <span>{'   |   '}</span>
                   <i>{publisher}</i>
                 </div>
               </div>
-              <div
-                css={{
-                  right: 0,
-                  color: colors.gray80,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-around',
-                  minHeight: 100,
-                }}
-              >
+              <div className="right-0 flex flex-col justify-between h-full text-secondary80">
                 {book.loadingBook ? null : <StatusButtons book={book} />}
               </div>
             </div>
-            <div css={{marginTop: 10, minHeight: 46}}>
+            <div className="mt-2.5 h-12">
               {listItem?.finishDate ? <Rating listItem={listItem} /> : null}
               {listItem ? <ListItemTimeframe listItem={listItem} /> : null}
             </div>
             <br />
-            <p css={{whiteSpace: 'break-spaces', display: 'block'}}>
-              {synopsis}
-            </p>
+            <p className="block whitespace-pre-line">{synopsis}</p>
           </div>
         </div>
         {!book.loadingBook && listItem ? (
@@ -91,8 +67,11 @@ function ListItemTimeframe({listItem}) {
 
   return (
     <Tooltip label={timeframeLabel}>
-      <div aria-label={timeframeLabel} css={{marginTop: 6}}>
-        <FaRegCalendarAlt css={{marginTop: -2, marginRight: 5}} />
+      <div
+        aria-label={timeframeLabel}
+        className="mt-1.5 flex flex-row items-center"
+      >
+        <FaRegCalendarAlt className="-mt-0.5 mr-1.5" />
         <span>
           {formatDate(listItem.startDate)}{' '}
           {listItem.finishDate ? `— ${formatDate(listItem.finishDate)}` : null}
@@ -119,22 +98,12 @@ function NotesTextarea({listItem}) {
       <div>
         <label
           htmlFor="notes"
-          css={{
-            display: 'inline-block',
-            marginRight: 10,
-            marginTop: '0',
-            marginBottom: '0.5rem',
-            fontWeight: 'bold',
-          }}
+          className="inline-block mr-2.5 mt-0 mb-2 font-bold"
         >
           Notes
         </label>
         {isError ? (
-          <ErrorMessage
-            variant="inline"
-            error={error}
-            css={{fontSize: '0.7em'}}
-          />
+          <ErrorMessage variant="inline" error={error} classes={'text-sm'} />
         ) : null}
         {isLoading ? <Spinner /> : null}
       </div>
@@ -142,7 +111,7 @@ function NotesTextarea({listItem}) {
         id="notes"
         defaultValue={listItem.notes}
         onChange={handleNotesChange}
-        css={{width: '100%', minHeight: 300}}
+        style={{width: '100%', minHeight: 300}}
       />
     </React.Fragment>
   )

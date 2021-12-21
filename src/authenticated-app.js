@@ -1,29 +1,20 @@
-/** @jsx jsx */
-import {jsx} from '@emotion/core'
-
+import * as React from 'react'
 import {Routes, Route, Link as RouterLink, useMatch} from 'react-router-dom'
 import {ErrorBoundary} from 'react-error-boundary'
 import {Button, ErrorMessage, FullPageErrorFallback} from './components/lib'
-import * as mq from './styles/media-queries'
-import * as colors from './styles/colors'
 import {useAuth} from './context/auth-context'
 import {ReadingListScreen} from './screens/reading-list'
 import {FinishedScreen} from './screens/finished'
 import {DiscoverBooksScreen} from './screens/discover'
 import {BookScreen} from './screens/book'
 import {NotFoundScreen} from './screens/not-found'
+import '../src/styles/global.css'
 
 function ErrorFallback({error}) {
   return (
     <ErrorMessage
       error={error}
-      css={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
+      classes="h-full flex flex-col items-center justify-center"
     />
   )
 }
@@ -32,40 +23,17 @@ function AuthenticatedApp() {
   const {user, logout} = useAuth()
   return (
     <ErrorBoundary FallbackComponent={FullPageErrorFallback}>
-      <div
-        css={{
-          display: 'flex',
-          alignItems: 'center',
-          position: 'absolute',
-          top: '10px',
-          right: '10px',
-        }}
-      >
+      <div className="flex items-center absolute top-2.5 right-2.5">
         {user.username}
-        <Button variant="secondary" css={{marginLeft: '10px'}} onClick={logout}>
+        <Button variant="secondary" className="ml-2.5" onClick={logout}>
           Logout
         </Button>
       </div>
-      <div
-        css={{
-          margin: '0 auto',
-          padding: '4em 2em',
-          maxWidth: '840px',
-          width: '100%',
-          display: 'grid',
-          gridGap: '1em',
-          gridTemplateColumns: '1fr 3fr',
-          [mq.small]: {
-            gridTemplateColumns: '1fr',
-            gridTemplateRows: 'auto',
-            width: '100%',
-          },
-        }}
-      >
-        <div css={{position: 'relative'}}>
+      <div className="grid w-full max-w-4xl gap-4 px-8 py-16 mx-auto my-0 homeScreenGrid">
+        <div className="relative">
           <Nav />
         </div>
-        <main css={{width: '100%'}}>
+        <main className="w-full">
           <ErrorBoundary FallbackComponent={ErrorFallback}>
             <AppRoutes />
           </ErrorBoundary>
@@ -77,34 +45,12 @@ function AuthenticatedApp() {
 
 function NavLink(props) {
   const match = useMatch(props.to)
+  const matchClasses = match
+    ? 'border-l-4 border-solid border-primary bg-secondary10'
+    : 'border-l-4 border-solid border-transparent'
   return (
     <RouterLink
-      css={[
-        {
-          display: 'block',
-          padding: '8px 15px 8px 10px',
-          margin: '5px 0',
-          width: '100%',
-          height: '100%',
-          color: colors.text,
-          borderRadius: '2px',
-          borderLeft: '5px solid transparent',
-          ':hover': {
-            color: colors.indigo,
-            textDecoration: 'none',
-            background: colors.gray10,
-          },
-        },
-        match
-          ? {
-              borderLeft: `5px solid ${colors.indigo}`,
-              background: colors.gray10,
-              ':hover': {
-                background: colors.gray10,
-              },
-            }
-          : null,
-      ]}
+      className={`block py-2 pr-3.5 pl-2.5 my-1.5 mx-0 w-full h-full text-textPrimary rounded-sm hover:no-underline hover:bg-secondary10 ${matchClasses}`}
       {...props}
     />
   )
@@ -112,25 +58,8 @@ function NavLink(props) {
 
 function Nav(params) {
   return (
-    <nav
-      css={{
-        position: 'sticky',
-        top: '4px',
-        padding: '1em 1.5em',
-        border: `1px solid ${colors.gray10}`,
-        borderRadius: '3px',
-        [mq.small]: {
-          position: 'static',
-          top: 'auto',
-        },
-      }}
-    >
-      <ul
-        css={{
-          listStyle: 'none',
-          padding: '0',
-        }}
-      >
+    <nav className="static top-auto px-6 py-4 border border-solid rounded-sm md:sticky md:top-1 border-bg-secondary10 ">
+      <ul className="p-0 list-none">
         <li>
           <NavLink to="/list">Reading List</NavLink>
         </li>

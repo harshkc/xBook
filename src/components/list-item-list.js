@@ -1,6 +1,4 @@
-/** @jsx jsx */
-import {jsx} from '@emotion/core'
-
+import * as React from 'react'
 import {useListItems} from 'utils/list-items'
 import {BookListUL} from './lib'
 import {BookRow} from './book-row'
@@ -12,14 +10,10 @@ function ListItemList({filterListItems, noListItems, noFilteredListItems}) {
   const filteredListItems = listItems.filter(filterListItems)
 
   if (!listItems.length) {
-    return <div css={{marginTop: '1em', fontSize: '1.2em'}}>{noListItems}</div>
+    return <div className="mt-4 text-lg ">{noListItems}</div>
   }
   if (!filteredListItems.length) {
-    return (
-      <div css={{marginTop: '1em', fontSize: '1.2em'}}>
-        {noFilteredListItems}
-      </div>
-    )
+    return <div className="mt-4 text-lg">{noFilteredListItems}</div>
   }
 
   return (

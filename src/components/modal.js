@@ -1,6 +1,3 @@
-/** @jsx jsx */
-import {jsx} from '@emotion/core'
-
 import * as React from 'react'
 import VisuallyHidden from '@reach/visually-hidden'
 import {Dialog, CircleButton} from './lib'
@@ -42,7 +39,7 @@ function ModalContentsBase(props) {
 function ModalContents({title, children, ...props}) {
   return (
     <ModalContentsBase {...props}>
-      <div css={{display: 'flex', justifyContent: 'flex-end'}}>
+      <div className="flex justify-end">
         <ModalDismissButton>
           <CircleButton>
             <VisuallyHidden>Close</VisuallyHidden>
@@ -50,7 +47,7 @@ function ModalContents({title, children, ...props}) {
           </CircleButton>
         </ModalDismissButton>
       </div>
-      <div className="text-center h3">{title}</div>
+      <h3 className="text-center h3">{title}</h3>
       {children}
     </ModalContentsBase>
   )

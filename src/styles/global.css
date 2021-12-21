@@ -33,6 +33,22 @@ a:focus {
   text-decoration: underline;
 }
 
+.margin-vertical-20 {
+  margin-top: 20vh;
+  margin-bottom: 20vh;
+}
+
+.homeScreenGrid {
+  grid-template-columns: 1fr 3fr;
+}
+
+@media only screen and (max-width: 991px) {
+  .homeScreenGrid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+}
+
 .h1 {
   @apply my-2 text-4xl font-bold leading-tight md:text-5xl;
 }

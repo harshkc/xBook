@@ -1,6 +1,4 @@
-/** @jsx jsx */
-import {jsx} from '@emotion/core'
-
+import * as React from 'react'
 import {Link} from 'react-router-dom'
 import {useListItem} from 'utils/list-items'
 import {StatusButtons} from './status-buttons'
@@ -17,12 +15,10 @@ function BookRow({book}) {
       <Link
         aria-labelledby={id}
         to={`/book/${book.id}`}
-        className="grid h-auto p-5 border-r-2 hover:text-gray-800 hover:shadow-md hover:no-underline focus:shadow-md focus:no-underline"
+        className="grid h-auto gap-5 p-5 border border-r-2 border-solid border-secondary20 hover:text-gray-800 hover:shadow-md hover:no-underline focus:shadow-md focus:no-underline"
         style={{
           flexGrow: 2,
           gridTemplateColumns: '140px 1fr',
-          gridGap: 20,
-          border: `1px solid #e4e5e9`,
         }}
       >
         <div className="w-24 md:w-36">
@@ -35,25 +31,17 @@ function BookRow({book}) {
         <div className="flex-1">
           <div className="flex justify-between">
             <div className="flex-1">
-              <div className="my-0 text-blue-800 h5" id={id}>
+              <h5 className="my-0 text-primary h5" id={id}>
                 {title}
-              </div>
+              </h5>
               {listItem?.finishDate ? <Rating listItem={listItem} /> : null}
             </div>
             <div className="ml-2.5">
-              <div
-                css={{
-                  marginTop: '0.4em',
-                  fontStyle: 'italic',
-                  fontSize: '0.85em',
-                }}
-              >
-                {author}
-              </div>
+              <div className="mt-1.5 italic text-sm">{author}</div>
               <small>{book.publisher}</small>
             </div>
           </div>
-          <small className="block text-sm" style={{whiteSpace: 'break-spaces'}}>
+          <small className="block text-sm whitespace-wrap">
             {book.synopsis.substring(0, 500)}...
           </small>
         </div>

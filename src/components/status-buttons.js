@@ -1,6 +1,3 @@
-/** @jsx jsx */
-import {jsx} from '@emotion/core'
-
 import * as React from 'react'
 import {
   FaCheckCircle,
@@ -16,7 +13,6 @@ import {
   useRemoveListItem,
   useCreateListItem,
 } from 'utils/list-items'
-import * as colors from 'styles/colors'
 import {useAsync} from 'utils/hooks'
 import {CircleButton, Spinner} from './lib'
 
@@ -34,16 +30,11 @@ function TooltipButton({label, highlight, onClick, icon, ...rest}) {
   return (
     <Tooltip label={isError ? error.message : label}>
       <CircleButton
-        css={{
-          backgroundColor: 'white',
-          ':hover,:focus': {
-            color: isLoading
-              ? colors.gray80
-              : isError
-              ? colors.danger
-              : highlight,
-          },
-        }}
+        className={`my-1.5 bg-base hover:${
+          isLoading ? 'text-secondary80' : isError ? 'text-danger' : highlight
+        } focus:${
+          isLoading ? 'text-secondary80' : isError ? 'text-danger' : highlight
+        }`}
         disabled={isLoading}
         onClick={handleClick}
         aria-label={isError ? error.message : label}
@@ -68,14 +59,14 @@ function StatusButtons({book}) {
         Boolean(listItem.finishDate) ? (
           <TooltipButton
             label="Mark as unread"
-            highlight={colors.yellow}
+            highlight="text-yellow"
             onClick={() => mutate({id: listItem.id, finishDate: null})}
             icon={<FaBook />}
           />
         ) : (
           <TooltipButton
             label="Mark as read"
-            highlight={colors.green}
+            highlight="text-green"
             onClick={() => mutate({id: listItem.id, finishDate: Date.now()})}
             icon={<FaCheckCircle />}
           />
@@ -84,14 +75,14 @@ function StatusButtons({book}) {
       {listItem ? (
         <TooltipButton
           label="Remove from list"
-          highlight={colors.danger}
+          highlight="text-danger"
           onClick={() => handleRemoveClick({id: listItem.id})}
           icon={<FaMinusCircle />}
         />
       ) : (
         <TooltipButton
           label="Add to list"
-          highlight={colors.indigo}
+          highlight="text-primary"
           onClick={() => handleAddClick({bookId: book.id})}
           icon={<FaPlusCircle />}
         />

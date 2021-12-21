@@ -1,6 +1,3 @@
-/** @jsx jsx */
-import {jsx} from '@emotion/core'
-
 import * as React from 'react'
 import {Input, Button, Spinner, FormGroup, ErrorMessage} from './components/lib'
 import {Modal, ModalContents, ModalOpenButton} from './components/modal'
@@ -12,7 +9,7 @@ function LoginForm({onSubmit, submitButton}) {
   const {isLoading, isError, error, run} = useAsync()
   function handleSubmit(event) {
     event.preventDefault()
-    const {username, password} = event.target.elements
+    const [username, password] = event.target.elements
 
     run(
       onSubmit({
@@ -52,13 +49,13 @@ function UnauthenticatedApp() {
   return (
     <div className="flex flex-col items-center justify-center w-full h-screen">
       <Logo width="80" height="80" />
-      <div className="h2">Bookshelf</div>
+      <h1 className="h2">Bookshelf</h1>
       <div
-        css={{
-          display: 'grid',
+        style={{
           gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
           gridGap: '0.75rem',
         }}
+        className="grid"
       >
         <Modal>
           <ModalOpenButton>

@@ -1,10 +1,6 @@
-/** @jsx jsx */
-import {jsx} from '@emotion/core'
-
 import * as React from 'react'
 import Tooltip from '@reach/tooltip'
 import {FaSearch, FaTimes} from 'react-icons/fa'
-import * as colors from 'styles/colors'
 import {useBookSearch, useRefetchBookSearchQuery} from 'utils/books'
 import {BookRow} from 'components/book-row'
 import {BookListUL, Spinner, Input} from 'components/lib'
@@ -23,7 +19,7 @@ function DiscoverBooksScreen() {
   function handleSearchClick(event) {
     event.preventDefault()
     setQueried(true)
-    setQuery(event.target.elements.search.value)
+    setQuery(event.target.elements[0].value)
   }
 
   return (
@@ -34,23 +30,18 @@ function DiscoverBooksScreen() {
             placeholder="Search books..."
             id="search"
             type="search"
-            css={{width: '100%'}}
+            className="w-full"
           />
           <Tooltip label="Search Books">
             <label htmlFor="search">
               <button
                 type="submit"
-                css={{
-                  border: '0',
-                  position: 'relative',
-                  marginLeft: '-35px',
-                  background: 'transparent',
-                }}
+                className="relative bg-transparent border-0 -ml-9"
               >
                 {isLoading ? (
                   <Spinner />
                 ) : isError ? (
-                  <FaTimes aria-label="error" css={{color: colors.danger}} />
+                  <FaTimes aria-label="error" className="text-danger" />
                 ) : (
                   <FaSearch aria-label="search" />
                 )}
@@ -60,7 +51,7 @@ function DiscoverBooksScreen() {
         </form>
 
         {isError ? (
-          <div css={{color: colors.danger}}>
+          <div className="text-danger">
             <p>There was an error:</p>
             <pre>{error.message}</pre>
           </div>
@@ -68,11 +59,11 @@ function DiscoverBooksScreen() {
       </div>
       <div>
         {queried ? null : (
-          <div css={{marginTop: 20, fontSize: '1.2em', textAlign: 'center'}}>
+          <div className="mt-5 text-lg leading-10 text-center">
             <p>Welcome to the discover page.</p>
             <p>Here, let me load a few books for you...</p>
             {isLoading ? (
-              <div css={{width: '100%', margin: 'auto'}}>
+              <div className="w-full m-auto">
                 <Spinner />
               </div>
             ) : isSuccess && books.length ? (
@@ -89,7 +80,7 @@ function DiscoverBooksScreen() {
             id="Discover Books Screen Book List"
             metadata={{query, bookCount: books.length}}
           >
-            <BookListUL css={{marginTop: 20}}>
+            <BookListUL className="mt-5">
               {books.map(book => (
                 <li key={book.id} aria-label={book.title}>
                   <BookRow key={book.id} book={book} />
@@ -98,9 +89,9 @@ function DiscoverBooksScreen() {
             </BookListUL>
           </Profiler>
         ) : queried ? (
-          <div css={{marginTop: 20, fontSize: '1.2em', textAlign: 'center'}}>
+          <div className="mt-5 text-lg text-center">
             {isLoading ? (
-              <div css={{width: '100%', margin: 'auto'}}>
+              <div className="w-full m-auto">
                 <Spinner />
               </div>
             ) : (
