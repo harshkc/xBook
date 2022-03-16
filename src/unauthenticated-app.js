@@ -8,7 +8,7 @@ import {Logo} from './components/logo'
 import {useAuth} from './context/auth-context'
 import {useAsync} from './utils/hooks'
 
-function LoginForm({onSubmit, submitButton}) {
+function LoginForm({onSubmit, submitButton, variant}) {
   const {isLoading, isError, error, run} = useAsync()
   function handleSubmit(event) {
     event.preventDefault()
@@ -51,8 +51,30 @@ function LoginForm({onSubmit, submitButton}) {
           ...(Array.isArray(submitButton.props.children)
             ? submitButton.props.children
             : [submitButton.props.children]),
-          isLoading ? <Spinner css={{marginLeft: 5}} /> : null,
         )}
+        <Button
+          variant={variant}
+          style={{marginLeft: '0.5rem'}}
+          onClick={() => {
+            //populate username and password input fields
+            const dummyData = {
+              username: 'Test',
+              password: 'test@1234',
+            }
+            document.getElementById('username').value = dummyData.username
+            document.getElementById('password').value = dummyData.password
+
+            run(
+              onSubmit({
+                username: dummyData.username,
+                password: dummyData.password,
+              }),
+            )
+          }}
+        >
+          Test User
+        </Button>
+        {isLoading ? <Spinner css={{marginLeft: 5}} /> : null}
       </div>
       {isError ? <ErrorMessage error={error} /> : null}
     </form>
@@ -89,6 +111,7 @@ function UnauthenticatedApp() {
             <LoginForm
               onSubmit={login}
               submitButton={<Button variant="primary">Login</Button>}
+              variant="secondary"
             />
           </ModalContents>
         </Modal>
@@ -100,6 +123,7 @@ function UnauthenticatedApp() {
             <LoginForm
               onSubmit={register}
               submitButton={<Button variant="secondary">Register</Button>}
+              variant="primary"
             />
           </ModalContents>
         </Modal>
